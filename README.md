@@ -6,6 +6,7 @@ pool and typed request/response handling using Go generics.
 Features
 - Create a pool of HTTP workers with `NewPool(maxWorkers)`.
 - Submit typed requests with `NewRequest[Req,Resp](pool, method, url, &req, &resp)`.
+- agnostic to any other requests Payload or response Body structs
 - Responses are unmarshalled into the provided response pointer and
   the call blocks until the request completes.
 
