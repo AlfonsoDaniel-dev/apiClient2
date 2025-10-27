@@ -9,6 +9,13 @@ import (
 	"reflect"
 )
 
+// The types and functions in this file implement a single fetch attempt.
+// A fetchAttempt represents one request/response cycle and carries a
+// typed request body and a typed pointer for the response body. The
+// attempt stores a Resolve object (`FetchResolve`) used by callers to
+// receive the parsed response and any error/status code produced by the
+// attempt.
+
 type fetchAttempt[reqBody any, respBody any] struct {
 	Url     string
 	Method  string
@@ -17,6 +24,13 @@ type fetchAttempt[reqBody any, respBody any] struct {
 	Resolve *FetchResolve[respBody]
 }
 
+// fetchAttempt holds the parameters and result carriers for a single
+// HTTP request. Generic type parameters allow callers to pass a
+// concrete request payload type and receive a concrete response type.
+
+// CreateRequest builds an *http.Request from the attempt fields. If
+// an error occurs during construction the error is stored in the
+// attempt's Resolve and the done signal is sent.
 func (f *fetchAttempt[reqBody, responseBody]) CreateRequest() *http.Request {
 
 	var err error
@@ -32,6 +46,9 @@ func (f *fetchAttempt[reqBody, responseBody]) CreateRequest() *http.Request {
 	return req
 }
 
+// ReadResponse accepts the raw response bytes and HTTP status code,
+// unmarshals the bytes into the Resolve.Data pointer and records the
+// status code and any unmarshalling error.
 func (f *fetchAttempt[reqBody, responseBody]) ReadResponse(data []byte, statusCode int) {
 	if data == nil {
 		f.setError(errors.New("response body is nil"))
@@ -69,6 +86,10 @@ func newRequest[reqBody any](url, method string, payload reqBody) (*http.Request
 	request.Header.Set("Content-Type", "application/json")
 	return request, nil
 }
+
+// newRequest is a helper that serializes the payload to JSON and builds
+// an *http.Request with a JSON content type. The function validates the
+// presence of method and url and returns a detailed error on failure.
 
 // fix
 func (f *fetchAttempt[reqBody, responseBody]) validateRespBody() error {
