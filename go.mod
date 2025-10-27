@@ -1,4 +1,4 @@
-module apiClient2
+module github.com/AlfonsoDaniel-dev/apiClient2
 
 go 1.23.4
 

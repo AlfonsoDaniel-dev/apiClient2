@@ -1,7 +1,6 @@
 package apiClient2
 
 import (
-	apiClient2 "apiClient2/src"
 	"fmt"
 	"log"
 	"net/http"
@@ -46,7 +45,7 @@ type Location struct {
 
 func main() {
 
-	pool, err := apiClient2.NewPool(5)
+	pool, err := NewPool(5)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -67,7 +66,7 @@ func main() {
 
 	character2 := &ApiResponse{}
 
-	_, err = apiClient2.NewRequest[any, ApiResponse](pool, http.MethodGet, "https://rickandmortyapi.com/api/character?page=2", nil, character2)
+	_, err = NewRequest[any, ApiResponse](pool, http.MethodGet, "https://rickandmortyapi.com/api/character?page=2", nil, character2)
 	if err != nil {
 		log.Fatal(err)
 	}
